@@ -1,0 +1,17 @@
+@theme {
+    --default-font-family: "Azeret Mono", "museo-sans-rounded", "Lucida Grande",
+        "sans-serif";
+    --default-mono-font-family: "Azeret Mono", "museo-sans-rounded",
+        "Lucida Grande", "sans-serif";
+    --font-sans: "Azeret Mono", "museo-sans-rounded", "Lucida Grande",
+        "sans-serif";
+    --font-display: "Azeret Mono", "museo-sans-rounded", "Lucida Grande",
+        "sans-serif";
+    --font-body: "Azeret Mono", "museo-sans-rounded", "Lucida Grande",
+        "sans-serif";
+
+    --color-darkPurple: #0a0a0a;
+    --color-darkPurple-500: #0a0a0a;
+    --color-darkPurple-600: #1e2945;
+    --color-lightGrey: #161615;
+}
