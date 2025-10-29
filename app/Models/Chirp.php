@@ -30,6 +30,6 @@ class Chirp extends Model
 
     public function user(): HasOne
     {
-        return $this->hasOne(User::class, 'id', 'name');
+        return $this->hasOne(User::class, 'id', 'user_id');
     }
 }

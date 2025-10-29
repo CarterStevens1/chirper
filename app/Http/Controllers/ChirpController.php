@@ -12,7 +12,8 @@ class ChirpController extends Controller
      */
     public function index()
     {
-        //
+        $chirps = Chirp::all();
+        return view('welcome', compact('chirps'));
     }
 
     /**
