@@ -26,7 +26,16 @@
     <div
         class="flex items-center justify-center w-full transition-opacity opacity-100 duration-750 lg:grow starting:opacity-0">
         <main class=" justify-center flex w-full flex-col-reverse lg:max-w-4xl lg:flex-row">
-            <section>
+            <section class="w-full">
+                <div
+                    class="p-4 mb-5 text-[13px] leading-5 flex-1 bg-white dark:bg-[#161615] dark:text-[#EDEDEC] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d] rounded-lg">
+                    <x-forms.form id="chirp" method="POST" action="/chirp-create" enctype="multipart/form-data">
+                        <x-forms.textArea name="message" label="" placeholder="Today I rode a bike..." />
+                    </x-forms.form>
+                    <div class="pt-3 mx-auto flex max-w-2xl justify-between space-y-6">
+                        <button form="update">Post</button>
+                    </div>
+                </div>
                 @foreach ($chirps as $chirp)
                     @php
                         $end = \Carbon\Carbon::parse($chirp->created_at);
