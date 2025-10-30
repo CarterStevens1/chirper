@@ -17,3 +17,5 @@ Route::post('destroy', [RegisteredUserController::class, 'destroy'])->middleware
 
 Route::get('chirp-create', [ChirpController::class, 'create'])->middleware('auth')->name('chirp-create');
 Route::post('chirp-create', [ChirpController::class, 'store'])->middleware('auth')->name('chirp-create');
+
+Route::post('logout', [LoginController::class, 'destroy'])->middleware('auth')->name('logout');
