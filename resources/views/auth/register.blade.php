@@ -1,5 +1,5 @@
 <x-layout>
-    <x-forms.form method="POST" action="/register" enctype="multipart/form-data">
+    <x-forms.form method="POST" action="/register" enctype="multipart/form-data" class="space-y-6">
         <x-forms.input
             class="file:bg-violet file:border-violet/10 text-white file:mr-4 file:rounded-xl file:px-4 file:py-2"
             accept="image/png, image/jpeg, image/webp" type="file" name="image" label="Image"

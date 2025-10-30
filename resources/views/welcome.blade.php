@@ -66,7 +66,11 @@
                     <div
                         class="mb-5 text-[13px] leading-5 flex-1 bg-white dark:bg-lightGrey dark:text-[#EDEDEC] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d] rounded-lg">
                         <div class="p-8 lg:p-10 lg:pb-8">
-                            <p class="text-white text-lg">{{ $chirp->message }}</p>
+                            @foreach (preg_split('/\n+/', $chirp->message) as $message)
+                                @if (trim($message) !== '')
+                                    <p class="text-white text-lg not-last:mb-3">{{ $message }}</p>
+                                @endif
+                            @endforeach
                             @if ($chirp->image !== null)
                                 <img class="aspect-square lg:aspect-video max-h-100 object-cover rounded-lg mt-6"
                                     src="{{ asset($chirp->image) }}" alt="User profile picture" />

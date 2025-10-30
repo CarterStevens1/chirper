@@ -34,6 +34,8 @@ class ChirpController extends Controller
             'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,svg,gif', 'max:2048'],
         ]);
 
+        $chripAtrributes['message'] = preg_replace('/(\r\n|\n|\r){2,}/', "\n", $chripAtrributes['message']);
+
         $imagePath = null;
 
         // Handle image upload
