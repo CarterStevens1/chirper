@@ -15,18 +15,19 @@ class Chirp extends Model
      * @var list<string>
      */
     protected $fillable = [
+        'user_id',
         'message',
         'image',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
-    protected $hidden = [
-        'user_id',
-    ];
+    // /**
+    //  * The attributes that should be hidden for serialization.
+    //  *
+    //  * @var list<string>
+    //  */
+    // protected $hidden = [
+    //     'user_id',
+    // ];
 
     public function user(): HasOne
     {

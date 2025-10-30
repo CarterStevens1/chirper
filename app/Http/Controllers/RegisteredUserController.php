@@ -61,7 +61,7 @@ class RegisteredUserController extends Controller
             // Store relative path for database
             $imagePath = 'images/' . $imageName;
             // Update image in attributes
-            $userAtrributes['image'] = $imageName;
+            $userAtrributes['image'] = $imagePath;
         }
         $user = User::create($userAtrributes);
 

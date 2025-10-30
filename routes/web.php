@@ -14,3 +14,6 @@ Route::post('login', [LoginController::class, 'store'])->name('login');
 Route::get('edit', [RegisteredUserController::class, 'edit'])->middleware('auth')->name('edit');
 Route::post('edit', [RegisteredUserController::class, 'update'])->middleware('auth')->name('update');
 Route::post('destroy', [RegisteredUserController::class, 'destroy'])->middleware('auth')->name('destroy');
+
+Route::get('chirp-create', [ChirpController::class, 'create'])->middleware('auth')->name('chirp-create');
+Route::post('chirp-create', [ChirpController::class, 'store'])->middleware('auth')->name('chirp-create');

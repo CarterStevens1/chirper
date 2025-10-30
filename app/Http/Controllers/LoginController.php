@@ -30,6 +30,7 @@ class LoginController extends Controller
      */
     public function store(Request $request)
     {
+
         $attributes = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
@@ -48,7 +49,7 @@ class LoginController extends Controller
         request()->session()->regenerate();
 
         // redirect
-        return redirect('/dashboard');
+        return redirect('/');
     }
 
     /**

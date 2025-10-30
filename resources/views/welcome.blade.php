@@ -28,13 +28,19 @@
         <main class=" justify-center flex w-full flex-col-reverse lg:max-w-4xl lg:flex-row">
             <section class="w-full">
                 <div
-                    class="p-4 mb-5 text-[13px] leading-5 flex-1 bg-white dark:bg-[#161615] dark:text-[#EDEDEC] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d] rounded-lg">
+                    class="p-4 mb-5 text-[13px] leading-5 flex-1 bg-white dark:bg-lightGrey dark:text-[#EDEDEC] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d] rounded-lg">
                     <x-forms.form id="chirp" method="POST" action="/chirp-create" enctype="multipart/form-data">
-                        <x-forms.textArea name="message" label="" placeholder="Today I rode a bike..." />
+                        <x-forms.textArea required name="message" label="" placeholder="Today I rode a bike..." />
+                        <div class="pt-3 mx-auto flex max-w-2xl justify-between items-center">
+                            <x-forms.input
+                                class="file:bg-violet file:border-violet/10 text-white file:mr-4 file:rounded-xl file:px-2 file:py-1 p-2!"
+                                accept="image/png, image/jpeg, image/webp" type="file" name="image"
+                                label="" />
+                            <button form="chirp"
+                                class="inline-block dark:bg-[#eeeeec] dark:border-[#eeeeec] dark:text-[#1C1C1A] dark:hover:bg-white dark:hover:border-white hover:bg-black hover:border-black px-5 py-2 bg-[#1b1b18] rounded-sm border border-black text-white text-sm leading-normal">Post</button>
+                        </div>
                     </x-forms.form>
-                    <div class="pt-3 mx-auto flex max-w-2xl justify-between space-y-6">
-                        <button form="update">Post</button>
-                    </div>
+
                 </div>
                 @foreach ($chirps as $chirp)
                     @php
@@ -50,13 +56,20 @@
                         }
                     @endphp
                     <div
-                        class="mb-5 text-[13px] leading-5 flex-1 bg-white dark:bg-[#161615] dark:text-[#EDEDEC] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d] rounded-lg">
-                        <div class="p-12">
+                        class="mb-5 text-[13px] leading-5 flex-1 bg-white dark:bg-lightGrey dark:text-[#EDEDEC] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d] rounded-lg">
+                        <div class="p-8 lg:p-10 lg:pb-8">
                             <p class="text-white">{{ $chirp->message }}</p>
+                            @if ($chirp->image !== null)
+                                <img class="w-full h-100 object-cover rounded-lg mt-6" src="{{ asset($chirp->image) }}"
+                                    alt="User profile picture" />
+                            @endif
                         </div>
-                        <div class="px-12 pb-6 flex justify-between">
-                            <span>{{ $chirp->user->name }}</span>
-
+                        <div class="p-8 lg:px-10 lg:pb-10 flex justify-between">
+                            <div class="flex gap-4 items-center">
+                                <img width="40" height="40" class="size-10 rounded-full"
+                                    src="{{ asset($chirp->user->image) }}" alt="User profile picture" />
+                                <span>{{ $chirp->user->name }}</span>
+                            </div>
                             <span class="text-sm text-white">{{ $total }}</span>
                         </div>
                     </div>
