@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\File;
 use Illuminate\Validation\Rules\Password;
 
@@ -34,35 +35,17 @@ class RegisteredUserController extends Controller
     public function store(Request $request)
     {
         $userAtrributes = $request->validate([
-            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,svg,gif', 'max:2048'],
+            'logo' => ['nullable', 'image',  File::types(['png', 'jpeg', 'jpg', 'webp']), 'max:2048'],
             'name' => ['required'],
-            'email' =>  ['required', 'email', 'unique:users,email'],
+            'email' => ['required', 'email', 'unique:users,email'],
             'password' => ['required', 'confirmed', Password::min(8)],
 
         ]);
-        $imagePath = null;
-
-        // Handle image upload
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-
-            // Create images directory if it doesn't exist
-            $destinationPath = public_path('images');
-            if (!file_exists($destinationPath)) {
-                mkdir($destinationPath, 0755, true);
-            }
-
-            // Generate unique filename
-            $imageName = time() . '_' . $image->getClientOriginalName();
-
-            // Move file to public/images directory
-            $image->move($destinationPath, $imageName);
-
-            // Store relative path for database
-            $imagePath = 'images/' . $imageName;
-            // Update image in attributes
-            $userAtrributes['image'] = $imagePath;
+        if ($request->hasFile('logo')) {
+            $logoPath = $request->logo->store('user-images');
+            $userAtrributes['logo'] = $logoPath;
         }
+
         $user = User::create($userAtrributes);
 
         Auth::login($user);
@@ -92,51 +75,32 @@ class RegisteredUserController extends Controller
      */
     public function update(Request $request)
     {
-        $request->validate([
-            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,svg,gif', 'max:2048'],
+        $updatedAttributes = $request->validate([
+            'logo' => ['nullable', 'image', File::types(['png', 'jpeg', 'jpg', 'webp']), 'max:2048'],
             'name' => ['required'],
-            'current_password' => ['required'],
-            'password' => ['required', 'confirmed', 'min:8'],
+            'current_password' => ['nullable'],
+            'password' => ['nullable', 'confirmed', 'min:8'],
         ]);
-
+        $returnMessage = 'Profile updated successfully!';
         $user = Auth::user();
 
-        // Check current password
-        if (!Hash::check($request->current_password, $user->password)) {
-            return Redirect::back()->withErrors(['current_password' => 'Current password is incorrect.']);
+        if ($request->hasFile('logo')) {
+            $logoPath = $request->logo->store('user-images');
+            $updatedAttributes['logo'] = $logoPath;
+            $returnMessage = $returnMessage.' and profile picture updated successfully.';
+
         }
-
-        // Update password
-        $user->update([
-            'password' => Hash::make($request->password),
-        ]);
-
-        // Handle image upload if a new image is provided
-        if ($request->hasFile('image')) {
-            // Delete old image if it exists
-            if ($request->image_path && file_exists(public_path($request->image_path))) {
-                unlink(public_path($request->image_path));
+        if ($request->current_password !== null) {
+            // Check current password
+            if (! Hash::check($request->current_password, $user->password)) {
+                return Redirect::back()->withErrors(['current_password' => 'Current password is incorrect.']);
             }
-
-            $image = $request->file('image');
-
-            // Create images directory if it doesn't exist
-            $destinationPath = public_path('images');
-            if (!file_exists($destinationPath)) {
-                mkdir($destinationPath, 0755, true);
-            }
-
-            // Generate unique filename
-            $imageName = time() . '_' . $image->getClientOriginalName();
-
-            // Move file to public/images directory
-            $image->move($destinationPath, $imageName);
-
-            // Update the image path
-            $request->image_path = 'images/' . $imageName;
+            $updatedAttributes['password'] = Hash::make($request->password);
+            $returnMessage = $returnMessage.' and password updated successfully.';
         }
+        $user->update($updatedAttributes);
 
-        return Redirect::back()->with('success', 'Password updated successfully.');
+        return Redirect::back()->with('success', $returnMessage);
     }
 
     /**
@@ -149,11 +113,13 @@ class RegisteredUserController extends Controller
             return Redirect::back()->with('error', 'Not logged in. cannot delete user.');
         }
         // Delete the image file if it exists
-        if ($user->image && file_exists(public_path('images/' . $user->image))) {
-            unlink(public_path('images/' . $user->image));
+        if (Storage::exists($user->logo)) {
+            Storage::delete($user->logo);
         }
+
         $user->delete();
         Auth::logout();
+
         // Redirect to home page
         return Redirect::route('home')->with('success', 'User deleted successfully.');
     }
