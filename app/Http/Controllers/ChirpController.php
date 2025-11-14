@@ -13,8 +13,9 @@ class ChirpController extends Controller
      */
     public function index()
     {
-        $chirps = Chirp::orderBy('id', 'DESC')->get();
-        return view('welcome', compact('chirps'));
+        $chirps = Chirp::latest()->with('user:id,logo,name')->get();
+
+        return view('welcome', ['chirps' => $chirps]);
     }
 
     /**
@@ -36,27 +37,8 @@ class ChirpController extends Controller
 
         $chripAtrributes['message'] = preg_replace('/(\r\n|\n|\r){2,}/', "\n", $chripAtrributes['message']);
 
-        $imagePath = null;
-
-        // Handle image upload
         if ($request->hasFile('image')) {
-            $image = $request->file('image');
-
-            // Create images directory if it doesn't exist
-            $destinationPath = public_path('images/chirps');
-            if (!file_exists($destinationPath)) {
-                mkdir($destinationPath, 0755, true);
-            }
-
-            // Generate unique filename
-            $imageName = time() . '_' . $image->getClientOriginalName();
-
-            // Move file to public/images directory
-            $image->move($destinationPath, $imageName);
-
-            // Store relative path for database
-            $imagePath = 'images/chirps/' . $imageName;
-            // Update image in attributes
+            $imagePath = $request->image->store('chirp-images');
             $chripAtrributes['image'] = $imagePath;
         }
 

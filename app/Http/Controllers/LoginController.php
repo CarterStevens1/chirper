@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Board;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
@@ -35,8 +34,6 @@ class LoginController extends Controller
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
-        // attempt to log the user in
-        Auth::attempt($attributes);
 
         // if the user fails log in, redirect them to the login page
         if (! Auth::attempt($attributes)) {
@@ -82,6 +79,7 @@ class LoginController extends Controller
     public function destroy()
     {
         Auth::logout();
+
         return redirect('/');
     }
 }
